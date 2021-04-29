@@ -897,33 +897,18 @@ static void vc4_hdmi_recenter_fifo(struct vc4_hdmi *vc4_hdmi)
 		  "VC4_HDMI_FIFO_CTL_RECENTER_DONE");
 }
 
-static struct drm_connector_state *
-vc4_hdmi_encoder_get_connector_state(struct drm_encoder *encoder,
-				     struct drm_atomic_state *state)
-{
-	struct drm_connector_state *conn_state;
-	struct drm_connector *connector;
-	unsigned int i;
-
-	for_each_new_connector_in_state(state, connector, conn_state, i) {
-		if (conn_state->best_encoder == encoder)
-			return conn_state;
-	}
-
-	return NULL;
-}
-
 static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
 						struct drm_atomic_state *state)
 {
+	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+	struct drm_connector *connector = &vc4_hdmi->connector;
 	struct drm_connector_state *conn_state =
-		vc4_hdmi_encoder_get_connector_state(encoder, state);
+		drm_atomic_get_new_connector_state(state, connector);
 	struct vc4_hdmi_connector_state *vc4_conn_state =
 		conn_state_to_vc4_hdmi_conn_state(conn_state);
 	struct drm_crtc_state *crtc_state =
 		drm_atomic_get_new_crtc_state(state, conn_state->crtc);
 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
 	unsigned long bvb_rate, pixel_rate, hsm_rate;
 	int ret;
 
@@ -1014,13 +999,14 @@ err_put_runtime_pm:
 static void vc4_hdmi_encoder_pre_crtc_enable(struct drm_encoder *encoder,
 					     struct drm_atomic_state *state)
 {
+	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+	struct drm_connector *connector = &vc4_hdmi->connector;
 	struct drm_connector_state *conn_state =
-		vc4_hdmi_encoder_get_connector_state(encoder, state);
+		drm_atomic_get_new_connector_state(state, connector);
 	struct drm_crtc_state *crtc_state =
 		drm_atomic_get_new_crtc_state(state, conn_state->crtc);
 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
 	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
-	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
 
 	if (vc4_encoder->hdmi_monitor &&
 	    drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_LIMITED) {
@@ -1041,12 +1027,13 @@ static void vc4_hdmi_encoder_pre_crtc_enable(struct drm_encoder *encoder,
 static void vc4_hdmi_encoder_post_crtc_enable(struct drm_encoder *encoder,
 					      struct drm_atomic_state *state)
 {
+	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+	struct drm_connector *connector = &vc4_hdmi->connector;
 	struct drm_connector_state *conn_state =
-		vc4_hdmi_encoder_get_connector_state(encoder, state);
+		drm_atomic_get_new_connector_state(state, connector);
 	struct drm_crtc_state *crtc_state =
 		drm_atomic_get_new_crtc_state(state, conn_state->crtc);
 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
 	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
 	bool hsync_pos = mode->flags & DRM_MODE_FLAG_PHSYNC;
 	bool vsync_pos = mode->flags & DRM_MODE_FLAG_PVSYNC;
