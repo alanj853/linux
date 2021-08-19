@@ -2120,7 +2120,6 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
 	return 0;
 }
 
-#ifdef CONFIG_PM
 static int vc4_hdmi_runtime_suspend(struct device *dev)
 {
 	struct vc4_hdmi *vc4_hdmi = dev_get_drvdata(dev);
@@ -2141,7 +2140,6 @@ static int vc4_hdmi_runtime_resume(struct device *dev)
 
 	return 0;
 }
-#endif
 
 static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
 {
