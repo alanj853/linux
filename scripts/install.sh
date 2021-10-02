@@ -16,8 +16,8 @@ mkdir -p mnt
 mkdir -p mnt/fat32
 mkdir -p mnt/ext4
 
-sudo mount /dev/$11 mnt/fat32
-sudo mount /dev/$12 mnt/ext4
+sudo mount ${1}1 mnt/fat32
+sudo mount ${1}2 mnt/ext4
 
 sudo env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=mnt/ext4 modules_install
 
