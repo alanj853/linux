@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0
+menuconfig HELLO
+	tristate "HELLO support"
+	help
+	  This is Alan's First HELLO driver
