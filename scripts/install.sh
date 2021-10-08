@@ -22,11 +22,11 @@ sudo mount -v ${1}1 mnt/fat32
 sudo mount -v ${1}2 mnt/ext4
 
 echo "Installing modules..."
-#sudo env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=mnt/ext4 modules_install
+sudo env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=mnt/ext4 modules_install
 
 echo "Copying images..."
-#sudo cp -v mnt/fat32/$KERNEL.img mnt/fat32/$KERNEL-backup.img
-#sudo cp -v arch/arm64/boot/Image mnt/fat32/$KERNEL.img
+sudo mv -v mnt/fat32/$KERNEL.img mnt/fat32/$KERNEL-backup.img
+sudo cp -v arch/arm64/boot/Image mnt/fat32/$KERNEL.img
 
 echo "Copying DTBs..."
 sudo cp -v arch/arm64/boot/dts/broadcom/*.dtb mnt/fat32/
